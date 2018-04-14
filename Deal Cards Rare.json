@@ -1,0 +1,69 @@
+{
+  "SaveName": "",
+  "GameMode": "",
+  "Date": "",
+  "Table": "",
+  "Sky": "",
+  "Note": "",
+  "Rules": "",
+  "PlayerTurn": "",
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "ObjectStates": [
+    {
+      "Name": "Custom_Token",
+      "Transform": {
+        "posX": -1.37294233,
+        "posY": 1.06,
+        "posZ": -6.884841,
+        "rotX": 2.4975443E-06,
+        "rotY": 180.001022,
+        "rotZ": -1.24224039E-06,
+        "scaleX": 1.42055011,
+        "scaleY": 1.0,
+        "scaleZ": 1.42055011
+      },
+      "Nickname": "",
+      "Description": "",
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "Locked": false,
+      "Grid": true,
+      "Snap": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "CustomImage": {
+        "ImageURL": "http://i.imgur.com/9uU9mRS.png",
+        "ImageSecondaryURL": "",
+        "WidthScale": 0.0,
+        "CustomToken": {
+          "Thickness": 0.2,
+          "MergeDistancePixels": 15.0,
+          "Stackable": false
+        }
+      },
+      "LuaScript": "--Where it puts the cards it pulls. X, Y, Z\r\nfirstCardLocation = {0,2.6,0}\r\n--Offset for those cards. 0 makes a stack stead of a row. 1 staggers, more spreads them more\r\ncardShiftAmount = 0\r\n--How many to deal\r\ndealHowMany = 1\r\n\r\nfunction onload()\r\n    self.createButton({\r\n        label=\"Rare\", click_function=\"findDeck\", function_owner=self,\r\n        position={0,0.15,1.5}, height=240, width=1200, font_size=200\r\n    })\r\nend\r\n\r\n--Finds the deck by comparing all spawned decks locations to the tool.\r\n--Only a deck on the tool is close enough to trigger dealCards(v)\r\nfunction findDeck()\r\n    local allObjects = getAllObjects()\r\n    local toolPos = self.getPosition()\r\n    local toolPosX = toolPos.x\r\n    local toolPosZ = toolPos.z\r\n    for i, v in pairs(allObjects) do\r\n        if v.tag == \"Deck\" then\r\n            local vPos = v.getPosition()\r\n            local vPosX = vPos.x\r\n            local vPosZ = vPos.z\r\n            local dX = toolPosX - vPosX\r\n            local dZ = toolPosZ - vPosZ\r\n            if dX<1 and dX>-1 and dZ<1 and dZ>-1 then\r\n                dealCards(v)\r\n            end\r\n        end\r\n    end\r\nend\r\n\r\n--Deals the cards using takeObject. Height shift is used to stagger their height\r\n--so the top card stays on top of a new deck.\r\nfunction dealCards(deck)\n    math.randomseed(os.time())\n    math.random()\n    math.random()\n    heightShift = 0\r\n    for i=1, dealHowMany do\r\n        posX = firstCardLocation[1] + cardShiftAmount * i-1\r\n        posY = firstCardLocation[2] - heightShift\r\n        posZ = firstCardLocation[3]\r\n        local takenCard = deck.takeObject({\r\n            position={posX, posY, posZ}, index=math.random(deck.getQuantity())\r        })\r\n        heightShift = heightShift + 0.2\r\n        takenCard.clone({\r\n          position={posX, posY, posZ + 15}\r\n        })\r\n        takenCard.putObject(deck)\r\n    end\r\nend\r\n",
+      "LuaScriptState": "",
+      "GUID": "e78423",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0196766369,
+            "y": 0.100000255,
+            "z": 0.00162774883
+          },
+          "Rotation": {
+            "x": 9.63962157E-05,
+            "y": 359.971619,
+            "z": 180.0004
+          }
+        }
+      ]
+    }
+  ],
+  "TabStates": {}
+}
